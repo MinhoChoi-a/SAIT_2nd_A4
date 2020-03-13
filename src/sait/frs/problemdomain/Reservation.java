@@ -10,8 +10,14 @@ public class Reservation {
 	private double cost;
 	private boolean active;
 	
-	public Reservation()
+	public Reservation(String code, String flightCode, String airline, String name, String citizenship, double cost)
 	{
+		this.code = code;
+		this.flightCode = flightCode;
+		this.airline = airline;
+		this.name = name;
+		this.citizenship = citizenship;
+		this.cost = cost;	
 		
 	}
 
