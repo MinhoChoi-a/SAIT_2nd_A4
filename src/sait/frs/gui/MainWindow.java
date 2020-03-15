@@ -6,7 +6,7 @@ import java.io.*;
 
 import javax.swing.*;
 
-import sait.frs.manager.Manager;
+import sait.frs.manager.*;
 
 
 /**
@@ -19,15 +19,16 @@ import sait.frs.manager.Manager;
 
 public class MainWindow extends JFrame 
 {
-	private static final String TAB_FLIGHTS = "flights";
-	private static final String TAB_RESERVATIONS = "reservations";
+	private final static String TAB_FLIGHTS = "flights";
+	private final static String TAB_RESERVATIONS = "reservations";
 	private final int WIDTH = 600,
 					  HEIGHT = 600;
 	
 	/**
 	 * Holds the flight and reservation manager.
 	 */
-    private Manager manager;
+    private FlightManager flightManager;
+    private ReservationManager reservationManager;
 	
     /**
 	 * Card layout to display tab content.
@@ -69,7 +70,8 @@ public class MainWindow extends JFrame
 	 */
 	public MainWindow() throws IOException
 	{
-		this.manager = new Manager();
+		this.flightManager = new FlightManager();
+		this.reservationManager = new ReservationManager();
 		
 		setTitle("Flight Reservation Management System");
 		
@@ -102,15 +104,16 @@ public class MainWindow extends JFrame
 	/**
 	 * Creates the center panel.
 	 * @return JPanel that goes in center.
+	 * @throws IOException 
 	 */
-	private JPanel createCenterPanel() 
+	private JPanel createCenterPanel() throws IOException 
 	{
 		JPanel panel = new JPanel();
 		
 		cardLayout = new CardLayout();
 		
-		flightsTab = new FlightsTab(manager);
-		reservationsTab = new ReservationsTab(manager);
+		flightsTab = new FlightsTab(flightManager,reservationManager);
+		reservationsTab = new ReservationsTab(reservationManager);
 		
 		panel.setLayout(cardLayout);
 		
