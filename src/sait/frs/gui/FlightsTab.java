@@ -3,13 +3,14 @@ package sait.frs.gui;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.*;
 
 import javax.swing.*;
 import javax.swing.event.*;
 
 import sait.frs.exception.*;
-import sait.frs.manager.Manager;
+import sait.frs.manager.*;
 import sait.frs.problemdomain.Flight;
 import sait.frs.problemdomain.Reservation;
 
@@ -19,14 +20,15 @@ import sait.frs.problemdomain.Reservation;
  * @author Minho Choi 812108 Section CC
  * @author Michael Doctor 820167 Section CCC
  * @version 1.0, March 1, 2020
- *
+ *test
  */
 public class FlightsTab extends TabBase
 {
 	/**
 	 * Instance of travel manager.
 	 */
-	private Manager manager;
+	private FlightManager manager;
+	private ReservationManager reservationManager;
 
 	/**
 	 * List of flights.
@@ -64,10 +66,13 @@ public class FlightsTab extends TabBase
 	
 	/**
 	 * Creates the components for flights tab.
+	 * @throws IOException 
 	 */
-	public FlightsTab(Manager manager)
+	public FlightsTab(FlightManager manager, ReservationManager reservationManager) throws IOException
 	{
 		this.manager = manager;
+		this.reservationManager = reservationManager;
+		
 		panel.setLayout(new BorderLayout());
 
 		JPanel northPanel = createNorthPanel();
@@ -164,7 +169,7 @@ public class FlightsTab extends TabBase
 		JButton reserveButton = new JButton("Reserve");
 		reserveButton.setFont(new Font("Tahoma", Font.BOLD, 15));
 		//action listener for button pressed
-		reserveButton.addActionListener(new MakeReservation());
+		//reserveButton.addActionListener(new MakeReservation());
 
 		panel.add(header, BorderLayout.NORTH);
 		panel.add(reserveButton, BorderLayout.SOUTH);
@@ -312,7 +317,7 @@ public class FlightsTab extends TabBase
 	 * 
 	 * @return JPanel that goes in south.
 	 */
-	private JPanel createSouthPanel()
+	private JPanel createSouthPanel() throws IOException
 	{
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
@@ -337,8 +342,9 @@ public class FlightsTab extends TabBase
 	 * Creates the flight panel for south panel.
 	 * 
 	 * @return JPanel that goes in center south of main panel.
+	 * @throws IOException 
 	 */
-	private JPanel buildFindFlightPanel()
+	private JPanel buildFindFlightPanel() throws IOException
 	{
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
@@ -384,17 +390,31 @@ public class FlightsTab extends TabBase
 	 * 
 	 * @return JPanel that goes in center of findflight panel.
 	 */
-	private JPanel buildComboBoxPanel()
+	private JPanel buildComboBoxPanel() throws IOException
 	{
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(3, 1));
 
+		ArrayList<String> codeList = new ArrayList<>(),
+						  nameList = new ArrayList<>();
+		
+		for (int i = 0; i<manager.getAirports().size();i++)
+		{
+			if (i % 2 == 0)
+			{
+				codeList.add(manager.getAirports().get(i));
+			}
+			else
+			{
+				nameList.add(manager.getAirports().get(i));
+			}
+		}
 		//create ComboBoxes and add action listeners
-		fromCombo = new JComboBox(manager.getAirports().toArray());
+		fromCombo = new JComboBox(codeList.toArray());
 		fromCombo.setFont(new Font("Tahoma", Font.BOLD, 12));
 		fromCombo.addActionListener(new FindFlightListener());
 
-		toCombo = new JComboBox(manager.getAirports().toArray());
+		toCombo = new JComboBox(codeList.toArray());
 		toCombo.setFont(new Font("Tahoma", Font.BOLD, 12));
 		toCombo.addActionListener(new FindFlightListener());
 
@@ -469,7 +489,7 @@ public class FlightsTab extends TabBase
 			{
 				//adds details from selected JList value to textfields
 				flightText.setText(flightsList.getSelectedValue().getCode());
-				airlineText.setText(flightsList.getSelectedValue().getAirline());
+				airlineText.setText(flightsList.getSelectedValue().getAirlineName());
 				dayText.setText(flightsList.getSelectedValue().getWeekday());
 				timeText.setText(flightsList.getSelectedValue().getTime());
 				costText.setText(String.format("$%.2f", flightsList.getSelectedValue().getCostPerSeat()));
@@ -541,7 +561,7 @@ public class FlightsTab extends TabBase
 			try
 			{
 				//creates reservation when no exceptions are thrown
-				reservation = manager.makeReservation(flightsList.getSelectedValue(), nameText.getText(), citizenshipText.getText());
+				reservation = reservationManager.makeReservation(flightsList.getSelectedValue(), nameText.getText(), citizenshipText.getText());
 			}
 			catch(NullFlightException | NoMoreSeatsException | InvalidNameException | InvalidCitizenshipException ex)
 			{

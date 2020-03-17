@@ -33,7 +33,7 @@ public class ReservationsTab extends TabBase {
 	/**
 	 * Instance of travel manager.
 	 */
-	private Manager manager;
+	private ReservationManager manager;
 
 	// text field for search data
 	private JTextField codeInput, airLineInput, nameInput;
@@ -56,7 +56,7 @@ public class ReservationsTab extends TabBase {
 	/**
 	 * Creates the components for reservations tab.
 	 */
-	public ReservationsTab(Manager manager) {
+	public ReservationsTab(ReservationManager manager) {
 		this.manager = manager;
 		panel.setLayout(new BorderLayout());
 

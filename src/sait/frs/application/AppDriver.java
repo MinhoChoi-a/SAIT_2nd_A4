@@ -1,6 +1,5 @@
 package sait.frs.application;
 
-import java.util.Scanner;
 import java.io.*;
 import sait.frs.gui.*;
 
