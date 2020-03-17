@@ -100,10 +100,21 @@ public class Flight {
 		return costPerSeat;
 	}
 	
-//	public boolean isDomestic()
-//	{
-//		
-//	}
+	public boolean isDomestic()
+	{
+		boolean domestic;
+		
+		if(this.from.charAt(0) == 'Y' && this.from.charAt(0) == this.to.charAt(0))
+		{
+			domestic = true;
+		}
+		else
+		{
+			domestic = false;
+		}
+		return domestic;
+		
+	}
 	
 	private void parseCode(String code)
 	{

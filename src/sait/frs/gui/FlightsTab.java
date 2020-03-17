@@ -9,7 +9,7 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
-//import sait.frs.exception.*;
+import sait.frs.exception.*;
 import sait.frs.manager.*;
 import sait.frs.problemdomain.Flight;
 import sait.frs.problemdomain.Reservation;
@@ -395,12 +395,26 @@ public class FlightsTab extends TabBase
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(3, 1));
 
+		ArrayList<String> codeList = new ArrayList<>(),
+						  nameList = new ArrayList<>();
+		
+		for (int i = 0; i<manager.getAirports().size();i++)
+		{
+			if (i % 2 == 0)
+			{
+				codeList.add(manager.getAirports().get(i));
+			}
+			else
+			{
+				nameList.add(manager.getAirports().get(i));
+			}
+		}
 		//create ComboBoxes and add action listeners
-		fromCombo = new JComboBox(manager.getAirports().toArray());
+		fromCombo = new JComboBox(codeList.toArray());
 		fromCombo.setFont(new Font("Tahoma", Font.BOLD, 12));
 		fromCombo.addActionListener(new FindFlightListener());
 
-		toCombo = new JComboBox(manager.getAirports().toArray());
+		toCombo = new JComboBox(codeList.toArray());
 		toCombo.setFont(new Font("Tahoma", Font.BOLD, 12));
 		toCombo.addActionListener(new FindFlightListener());
 

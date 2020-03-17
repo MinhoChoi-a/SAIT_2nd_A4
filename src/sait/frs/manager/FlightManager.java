@@ -21,14 +21,12 @@ public class FlightManager
 	public FlightManager()
 	{
 		this.airports = new ArrayList<>();
-		
 		this.flights = new ArrayList<>();
 	}
 	
 	public ArrayList<String> getAirports() throws IOException
 	{
 		populateAirports();
-		System.out.print(airports.get(0));
 		return airports;
 	}
 	
@@ -50,7 +48,17 @@ public class FlightManager
 	
 	public ArrayList<Flight> findFlights(String from, String to, String weekday)
 	{
+		ArrayList<Flight> flightsList = new ArrayList<>();
 		
+		
+		for(int i = 0; i<this.flights.size();i++)
+		{
+			if(this.flights.get(i).getFrom() == from && this.flights.get(i).getTo() == to && flights.get(i).getWeekday() == weekday)
+			{
+				flightsList.add(this.flights.get(i));
+			}
+		}
+		return flightsList;
 	}
 	
 	private void populateFlights() throws IOException
@@ -85,22 +93,23 @@ public class FlightManager
 		flightRead.close();
 	}
 	
-	//fix exceptions
 	private void populateAirports() throws IOException
 	{
-		String line,
+		String code,
 			   airport;
 		
 		this.airports = new ArrayList<>();
 		
 		File file = new File("res/airports.csv");
 		Scanner read = new Scanner(file);
+		read.useDelimiter(",");
 		
 		
 		while(read.hasNext())
 		{
-			line = read.nextLine();
-			airport = line.substring(0, 3);
+			code = read.next();
+			airport = read.nextLine().substring(1);
+			airports.add(code);
 			airports.add(airport);
 		}
 		read.close();
