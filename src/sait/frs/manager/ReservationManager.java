@@ -15,22 +15,22 @@ public class ReservationManager {
 						
 			String from = flight.getFrom();
 			
-			boolean check = false;
-			String[] domestic = {"YYC","YEG","YUL","YOW","YYZ","YVR","YWG"}; 
+			boolean check = flight.isDomestic();
+//			String[] domestic = {"YYC","YEG","YUL","YOW","YYZ","YVR","YWG"}; 
 						
 			Random rand = new Random();
 			
 			int randomNum = rand.nextInt(9000)+1000;
 			
-			int i=0;
-			while(!check && (i < domestic.length))
-			{
-				if(from.equals(domestic[i]))
-				{
-					check=true;
-				}
-				i++;
-			}
+//			int i=0;
+//			while(!check && (i < domestic.length))
+//			{
+//				if(from.equals(domestic[i]))
+//				{
+//					check=true;
+//				}
+//				i++;
+//			}
 						
 			String reserveCode;
 			
@@ -45,7 +45,7 @@ public class ReservationManager {
 			}
 			
 			String flightCode = flight.getCode();
-			String airline = flight.getAirline();
+			String airline = flight.getAirlineName();
 			double cost = flight.getCostPerSeat();
 			boolean active = true;
 			
@@ -59,8 +59,8 @@ public class ReservationManager {
 			file.writeBoolean(active);
 			file.close();
 			
-			Reservation rClass = new Reservation(reserveCode, flightCode, airline, name, citizenship, cost, active);
-			return rClass;
+			Reservation reservation = new Reservation(reserveCode, flightCode, airline, name, citizenship, cost, active);
+			return reservation;
 		}
 	
 	
@@ -153,13 +153,24 @@ public class ReservationManager {
 		Reservation reservation = new Reservation(rCode,fCode,aline,rName,rCitizen,rCost, act);
 		return reservation;
 	}
+	
+	public void persist()
+	{
+		
+	}
+	
+	private int getAvailableSeats()
+	{
+		
+	}
+	
+	private String generateReservationCode()
+	{
+		
+	}
+	
+	private void populateFromBinary()
+	{
+		
+	}
 }
-
-
-
-
-
-
-
-
-

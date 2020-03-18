@@ -395,18 +395,13 @@ public class FlightsTab extends TabBase
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(3, 1));
 
-		ArrayList<String> codeList = new ArrayList<>(),
-						  nameList = new ArrayList<>();
+		ArrayList<String> codeList = new ArrayList<>();
 		
 		for (int i = 0; i<manager.getAirports().size();i++)
 		{
 			if (i % 2 == 0)
 			{
 				codeList.add(manager.getAirports().get(i));
-			}
-			else
-			{
-				nameList.add(manager.getAirports().get(i));
 			}
 		}
 		//create ComboBoxes and add action listeners
@@ -563,9 +558,9 @@ public class FlightsTab extends TabBase
 				//creates reservation when no exceptions are thrown
 				reservation = reservationManager.makeReservation(flightsList.getSelectedValue(), nameText.getText(), citizenshipText.getText());
 			}
-			catch(NullFlightException | NoMoreSeatsException | InvalidNameException | InvalidCitizenshipException ex)
+			catch(IOException j)
 			{
-				
+				JOptionPane.showMessageDialog(null, "File not found");
 			}
 			//tells user reservation as created and their reservation code
 			JOptionPane.showMessageDialog(null, "Reservation Created. Your code is " + reservation.getCode());

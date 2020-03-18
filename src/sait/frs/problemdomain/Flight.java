@@ -15,17 +15,18 @@ public class Flight {
 		
 	}
 	
-	public Flight(String code, String airlineName, String from, String to, String weekday, String time,
+	public Flight(String code, String from, String to, String weekday, String time,
 			int seats, double costPerSeat)
 	{
 		this.code = code;
-		this.airlineName = airlineName;
 		this.from = from;
 		this.to = to;
 		this.weekday = weekday;
 		this.time = time;
 		this.seats = seats;
 		this.costPerSeat = costPerSeat;
+		
+		parseCode(code);
 	}
 
 	/**
@@ -118,7 +119,22 @@ public class Flight {
 	
 	private void parseCode(String code)
 	{
-		
+		if(code.substring(0, 2) == "OA")
+		{
+			this.airlineName = "Otto Airlines";
+		}
+		else if(code.substring(0, 2) == "CA")
+		{
+			this.airlineName = "Conned Air";
+		}
+		else if(code.substring(0, 2) == "TB")
+		{
+			this.airlineName = "Try a Bus Airways";
+		}
+		else if(code.substring(0, 2) == "VA")
+		{
+			this.airlineName = "Vertical Airlines";
+		}
 	}
 
 	
