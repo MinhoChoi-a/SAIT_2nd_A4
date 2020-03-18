@@ -113,7 +113,7 @@ public class MainWindow extends JFrame
 		cardLayout = new CardLayout();
 		
 		flightsTab = new FlightsTab(flightManager,reservationManager);
-		reservationsTab = new ReservationsTab(reservationManager);
+		reservationsTab = new ReservationsTab(flightManager,reservationManager);
 		
 		panel.setLayout(cardLayout);
 		

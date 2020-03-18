@@ -9,6 +9,12 @@ public class ReservationManager {
 
 	private ArrayList<Reservation> reservations; 
 	
+	public ReservationManager()
+	{
+		reservations = new ArrayList<>();
+		
+	}
+	
 	public Reservation makeReservation(Flight flight, String name, String citizenship) throws IOException
 		{
 			RandomAccessFile file = new RandomAccessFile("res/reservation.bin","rw");
@@ -79,7 +85,7 @@ public class ReservationManager {
 		double rCost;
 		boolean act;
 		
-		ArrayList<Reservation> checkRes = new ArrayList<Reservation>();
+//		ArrayList<Reservation> checkRes = new ArrayList<Reservation>();
 		
 		long i =0;	
 		while(i<file.length()) {
@@ -95,7 +101,7 @@ public class ReservationManager {
 			if(code.equals(rCode) || airline.equals(aline) || name.equals(rName))
 			{
 				Reservation res = new Reservation(rCode,fCode,aline,rName,rCitizen,rCost, act);
-				checkRes.add(res);
+				this.reservations.add(res);
 				
 				rFile.seek(rFile.length());
 				rFile.writeUTF(rCode); // 2+2*5 = 12
@@ -112,7 +118,7 @@ public class ReservationManager {
 		file.close();
 		rFile.close();
 		
-		return checkRes;
+		return this.reservations;
 		}
 
 	public Reservation findReservationByCode(String code) throws IOException {
@@ -159,9 +165,9 @@ public class ReservationManager {
 		
 	}
 	
-	private int getAvailableSeats()
+	private int getAvailableSeats(Flight flight)
 	{
-		
+		return flight.getSeats();
 	}
 	
 	private String generateReservationCode()
