@@ -558,9 +558,9 @@ public class FlightsTab extends TabBase
 				//creates reservation when no exceptions are thrown
 				reservation = reservationManager.makeReservation(flightsList.getSelectedValue(), nameText.getText(), citizenshipText.getText());
 			}
-			catch(NullFlightException | NoMoreSeatsException | InvalidNameException | InvalidCitizenshipException ex)
+			catch(IOException j)
 			{
-				
+				JOptionPane.showMessageDialog(null, "File not found");
 			}
 			//tells user reservation as created and their reservation code
 			JOptionPane.showMessageDialog(null, "Reservation Created. Your code is " + reservation.getCode());
