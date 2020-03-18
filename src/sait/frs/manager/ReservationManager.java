@@ -34,7 +34,6 @@ public class ReservationManager {
 			return reservation;
 		}
 	
-	
 	public ArrayList<Reservation> findReservations(String code, String airline, String name) throws IOException
 	{
 		RandomAccessFile file = new RandomAccessFile("res/reservation.bin","r");
@@ -110,9 +109,6 @@ public class ReservationManager {
 	
 	private String generateReservationCode(Flight flight)
 	{
-		
-		String from = flight.getFrom();
-		
 		boolean check = flight.isDomestic();
 					
 		Random rand = new Random();
@@ -123,12 +119,12 @@ public class ReservationManager {
 		
 		if(check==true)
 		{
-			reserveCode=String.format("%c%d", "D",randomNum);
+			reserveCode=String.format("%c%d", 'D',randomNum);
 		}
 		
 		else
 		{
-			reserveCode=String.format("%c%d", "I",randomNum);
+			reserveCode=String.format("%c%d", 'I',randomNum);
 		}
 		
 		return reserveCode;
