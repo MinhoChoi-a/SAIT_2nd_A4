@@ -34,6 +34,8 @@ public class Reservation {
 		this.citizenship = citizenship;
 		this.cost = cost;	
 		this.active = active;
+		this.cost = cost;
+		this.active = active;
 	}
 
 	/**
