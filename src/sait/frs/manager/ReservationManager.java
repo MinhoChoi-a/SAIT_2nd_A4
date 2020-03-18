@@ -20,40 +20,12 @@ public class ReservationManager {
 			RandomAccessFile file = new RandomAccessFile("res/reservation.bin","rw");
 						
 			String from = flight.getFrom();
-			
-			boolean check = flight.isDomestic();
-//			String[] domestic = {"YYC","YEG","YUL","YOW","YYZ","YVR","YWG"}; 
-						
-			Random rand = new Random();
-			
-			int randomNum = rand.nextInt(9000)+1000;
-			
-//			int i=0;
-//			while(!check && (i < domestic.length))
-//			{
-//				if(from.equals(domestic[i]))
-//				{
-//					check=true;
-//				}
-//				i++;
-//			}
-						
-			String reserveCode;
-			
-			if(check==true)
-			{
-				reserveCode=String.format("%c%d", "D",randomNum);
-			}
-			
-			else
-			{
-				reserveCode=String.format("%c%d", "I",randomNum);
-			}
-			
+			String reserveCode = generateReservationCode(flight);
 			String flightCode = flight.getCode();
 			String airline = flight.getAirlineName();
 			double cost = flight.getCostPerSeat();
 			boolean active = true;
+			
 			
 			file.seek(file.length());
 			file.writeUTF(reserveCode); // 2+2*5 = 12
@@ -160,9 +132,13 @@ public class ReservationManager {
 		return reservation;
 	}
 	
+	//incomplete
 	public void persist()
 	{
-		
+		for(int i = 0;i<reservations.size();i++)
+		{
+			
+		}
 	}
 	
 	private int getAvailableSeats(Flight flight)
@@ -170,13 +146,33 @@ public class ReservationManager {
 		return flight.getSeats();
 	}
 	
-	private String generateReservationCode()
+	private String generateReservationCode(Flight flight)
 	{
+		boolean check = flight.isDomestic();
+					
+		Random rand = new Random();
 		
+		int randomNum = rand.nextInt(9000)+1000;
+		
+					
+		String reserveCode;
+		
+		if(check==true)
+		{
+			reserveCode=String.format("%c%d", "D",randomNum);
+		}
+		
+		else
+		{
+			reserveCode=String.format("%c%d", "I",randomNum);
+		}
+		return reserveCode;
 	}
 	
+	//incomplete
 	private void populateFromBinary()
 	{
+		//reservations.clear();
 		
 	}
 }
