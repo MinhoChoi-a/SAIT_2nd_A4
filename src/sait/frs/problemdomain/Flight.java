@@ -119,29 +119,34 @@ public class Flight {
 	
 	private void parseCode(String code)
 	{
-		if(code.substring(0, 2) == "OA")
+		if(code.substring(0, 2).equals("OA"))
 		{
 			this.airlineName = "Otto Airlines";
 		}
-		else if(code.substring(0, 2) == "CA")
+		else if(code.substring(0, 2).equals("CA"))
 		{
 			this.airlineName = "Conned Air";
 		}
-		else if(code.substring(0, 2) == "TB")
+		else if(code.substring(0, 2).equals("TB"))
 		{
 			this.airlineName = "Try a Bus Airways";
 		}
-		else if(code.substring(0, 2) == "VA")
+		else if(code.substring(0, 2).equals("VA"))
 		{
 			this.airlineName = "Vertical Airlines";
+		}
+		else 
+		{
+			this.airlineName = "CPRG Airlines";
 		}
 	}
 
 	
 	public String toString()
 	{
-		return "Flight [code=" + code + ", airlineName=" + airlineName + ", from=" + from + ", to=" + to + ", weekday="
-				+ weekday + ", time=" + time + ", seats=" + seats + ", costPerSeat=" + costPerSeat + "]";
+		String toString;
+		toString = String.format("%s, From: %s, To: %s, Day: %s, Cost: %.2f", code, from, to, weekday, costPerSeat);
+		return toString;
 	}
 	
 
