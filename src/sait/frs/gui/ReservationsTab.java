@@ -34,7 +34,6 @@ public class ReservationsTab extends TabBase {
 	 * Instance of travel manager.
 	 */
 	private ReservationManager manager;
-	private FlightManager flightManager;
 
 	// text field for search data
 	private JTextField codeInput, airLineInput, nameInput;
@@ -51,15 +50,14 @@ public class ReservationsTab extends TabBase {
 	private JComboBox comboBox;
 	
 	// data type of Reservation, Flight class
-	private Reservation findR;
+	public static Reservation findR;
 	private Flight findF;
 
 	/**
 	 * Creates the components for reservations tab.
 	 */
-	public ReservationsTab(FlightManager flightManager, ReservationManager manager) {
+	public ReservationsTab(ReservationManager manager) {
 		this.manager = manager;
-		this.flightManager = flightManager;
 		panel.setLayout(new BorderLayout());
 
 		JPanel northPanel = createNorthPanel();
@@ -307,8 +305,7 @@ public class ReservationsTab extends TabBase {
 	 * 
 	 */
 	
-	private class findButtonActionListener implements ActionListener 
-	{
+	private class findButtonActionListener implements ActionListener {
 
 		public void actionPerformed(ActionEvent e) {
 			reserve.clear();
@@ -319,7 +316,7 @@ public class ReservationsTab extends TabBase {
 			String airLine = airLineInput.getText();
 			String name = nameInput.getText();
 
-			reserve = manager.findReservation(code, airLine, name);
+			reserve = manager.findReservations(code, airLine, name);
 
 			for (int i = 0; i < reserve.size(); i++) {
 				reserveCode.addElement(reserve.get(i).getCode());
@@ -398,12 +395,12 @@ public class ReservationsTab extends TabBase {
 			} else {
 
 				findR = manager.findReservationByCode(codeList.getSelectedValue());
-				findF = flightManager.findFlightByCode(findR.getFlightCode());
+				findF = findR.getFlight();
 				String cost = String.format("$%.2f", findF.getCostPerSeat());
 
 				codeField.setText(findR.getCode());
 				flightField.setText(findF.getCode());
-				airlineField.setText(findF.getAirlineName());
+				airlineField.setText(findF.getAirline());
 				costField.setText(cost);
 				nameField.setText(findR.getName());
 				citizenField.setText(findR.getCitizenship());
