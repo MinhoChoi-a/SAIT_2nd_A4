@@ -395,18 +395,13 @@ public class FlightsTab extends TabBase
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(3, 1));
 
-		ArrayList<String> codeList = new ArrayList<>(),
-						  nameList = new ArrayList<>();
+		ArrayList<String> codeList = new ArrayList<>();
 		
 		for (int i = 0; i<manager.getAirports().size();i++)
 		{
 			if (i % 2 == 0)
 			{
 				codeList.add(manager.getAirports().get(i));
-			}
-			else
-			{
-				nameList.add(manager.getAirports().get(i));
 			}
 		}
 		//create ComboBoxes and add action listeners

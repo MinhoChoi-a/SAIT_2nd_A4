@@ -38,12 +38,21 @@ public class FlightManager
 	
 	public String findAirportByCode(String code)
 	{
-		
+		return airports.get(airports.indexOf(code) + 1);
 	}
 	
 	public Flight findFlightByCode(String code)
 	{
-		
+		int position = 0;
+		for(int i = 0;i<flights.size();i++)
+		{
+			if (code == flights.get(i).getCode())
+			{
+				position = i;
+				i = flights.size();
+			}
+		}
+		return flights.get(position);
 	}
 	
 	public ArrayList<Flight> findFlights(String from, String to, String weekday)
@@ -86,7 +95,7 @@ public class FlightManager
 			seats = flightRead.nextInt();
 			costPerSeat = Double.parseDouble(flightRead.nextLine().substring(1));
 			
-			Flight flight = new Flight(code, airlineName,from,to,weekday,time,seats,costPerSeat);
+			Flight flight = new Flight(code, from,to,weekday,time,seats,costPerSeat);
 			flights.add(flight);
 			
 		}
