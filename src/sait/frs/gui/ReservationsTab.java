@@ -34,6 +34,7 @@ public class ReservationsTab extends TabBase {
 	 * Instance of travel manager.
 	 */
 	private ReservationManager manager;
+	private FlightManager flightManager;
 
 	// text field for search data
 	private JTextField codeInput, airLineInput, nameInput;
@@ -56,8 +57,9 @@ public class ReservationsTab extends TabBase {
 	/**
 	 * Creates the components for reservations tab.
 	 */
-	public ReservationsTab(ReservationManager manager) {
+	public ReservationsTab(FlightManager flightManager, ReservationManager manager) {
 		this.manager = manager;
+		this.flightManager = flightManager;
 		panel.setLayout(new BorderLayout());
 
 		JPanel northPanel = createNorthPanel();
@@ -305,7 +307,8 @@ public class ReservationsTab extends TabBase {
 	 * 
 	 */
 	
-	private class findButtonActionListener implements ActionListener {
+	private class findButtonActionListener implements ActionListener 
+	{
 
 		public void actionPerformed(ActionEvent e) {
 			reserve.clear();
@@ -316,7 +319,7 @@ public class ReservationsTab extends TabBase {
 			String airLine = airLineInput.getText();
 			String name = nameInput.getText();
 
-			reserve = manager.findReservations(code, airLine, name);
+			reserve = manager.findReservation(code, airLine, name);
 
 			for (int i = 0; i < reserve.size(); i++) {
 				reserveCode.addElement(reserve.get(i).getCode());
@@ -395,12 +398,12 @@ public class ReservationsTab extends TabBase {
 			} else {
 
 				findR = manager.findReservationByCode(codeList.getSelectedValue());
-				findF = findR.getFlight();
+				findF = flightManager.findFlightByCode(findR.getFlightCode());
 				String cost = String.format("$%.2f", findF.getCostPerSeat());
 
 				codeField.setText(findR.getCode());
 				flightField.setText(findF.getCode());
-				airlineField.setText(findF.getAirline());
+				airlineField.setText(findF.getAirlineName());
 				costField.setText(cost);
 				nameField.setText(findR.getName());
 				citizenField.setText(findR.getCitizenship());
