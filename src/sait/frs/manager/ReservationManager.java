@@ -1,5 +1,6 @@
 package sait.frs.manager;
 
+import sait.frs.gui.ReservationsTab;
 import sait.frs.problemdomain.*;
 
 import java.util.*;
@@ -9,24 +10,16 @@ public class ReservationManager {
 
 	private ArrayList<Reservation> reservations; 
 	
-	public ReservationManager()
-	{
-		reservations = new ArrayList<>();
-		
-	}
-	
 	public Reservation makeReservation(Flight flight, String name, String citizenship) throws IOException
 		{
 			RandomAccessFile file = new RandomAccessFile("res/reservation.bin","rw");
-						
-			String from = flight.getFrom();
+			
 			String reserveCode = generateReservationCode(flight);
 			String flightCode = flight.getCode();
 			String airline = flight.getAirlineName();
 			double cost = flight.getCostPerSeat();
 			boolean active = true;
-			
-			
+									
 			file.seek(file.length());
 			file.writeUTF(reserveCode); // 2+2*5 = 12
 			file.writeUTF(flightCode); // 2+2*7 = 16 
@@ -45,8 +38,7 @@ public class ReservationManager {
 	public ArrayList<Reservation> findReservation(String code, String airline, String name) throws IOException
 	{
 		RandomAccessFile file = new RandomAccessFile("res/reservation.bin","r");
-		RandomAccessFile rFile = new RandomAccessFile("res/fReserve.bin","rw");
-		
+				
 		file.seek(0);
 		
 		String rCode="";
@@ -57,9 +49,7 @@ public class ReservationManager {
 		double rCost;
 		boolean act;
 		
-//		ArrayList<Reservation> checkRes = new ArrayList<Reservation>();
-		
-		long i =0;	
+		long i=0;	
 		while(i<file.length()) {
 			
 			rCode = file.readUTF();
@@ -74,71 +64,43 @@ public class ReservationManager {
 			{
 				Reservation res = new Reservation(rCode,fCode,aline,rName,rCitizen,rCost, act);
 				this.reservations.add(res);
-				
-				rFile.seek(rFile.length());
-				rFile.writeUTF(rCode); // 2+2*5 = 12
-				rFile.writeUTF(fCode); // 2+2*7 = 16 
-				rFile.writeUTF(aline); // 2+2*2 = 6
-				rFile.writeUTF(rName); //
-				rFile.writeUTF(rCitizen);
-				rFile.writeDouble(rCost);
-				rFile.writeBoolean(act);
-								
+						
 				i = file.getFilePointer();
 			}}
 		
 		file.close();
-		rFile.close();
-		
+			
 		return this.reservations;
 		}
 
 	public Reservation findReservationByCode(String code) throws IOException {
 		
-		RandomAccessFile rFile = new RandomAccessFile("res/fReserve.bin","r");
-				
-		rFile.seek(0);
-		
-		String rCode="";
-		String fCode="";
-		String aline="";
-		String rName="";
-		String rCitizen="";
-		double rCost=0;
-		boolean act=true;
 		boolean check = false;
-		
-		long i =0;	
-		while(i<rFile.length() && !check) {
+		int i =0;	
+		while(i<reservations.size() && !check) {
 			
-			rCode = rFile.readUTF();
-			fCode = rFile.readUTF(); 
-			aline = rFile.readUTF(); 
-			rName = rFile.readUTF(); 
-			rCitizen = rFile.readUTF();
-			rCost = rFile.readDouble();
-			act = rFile.readBoolean();
-						
-			if(code.equals(rCode))
+			String rCode = reservations.get(i).getCode();
+			
+			if(rCode.equals(code))
 			{
 				check = true;
 			}
-			
-			i = rFile.getFilePointer();
 		}
-		rFile.close();
-		
-		Reservation reservation = new Reservation(rCode,fCode,aline,rName,rCitizen,rCost, act);
-		return reservation;
+				
+		return reservations.get(i);
 	}
 	
-	//incomplete
-	public void persist()
+	public void persist() throws IOException
 	{
-		for(int i = 0;i<reservations.size();i++)
-		{
+		RandomAccessFile file = new RandomAccessFile("res/reservation.bin","rw");
+		int dataSize = 0;
+		
+		file.seek(file.getFilePointer() - dataSize);
+		
+		ReservationsTab.findR.getCode();
 			
-		}
+		
+		file.close();
 	}
 	
 	private int getAvailableSeats(Flight flight)
@@ -148,13 +110,15 @@ public class ReservationManager {
 	
 	private String generateReservationCode(Flight flight)
 	{
+		
+		String from = flight.getFrom();
+		
 		boolean check = flight.isDomestic();
 					
 		Random rand = new Random();
 		
 		int randomNum = rand.nextInt(9000)+1000;
-		
-					
+							
 		String reserveCode;
 		
 		if(check==true)
@@ -166,13 +130,12 @@ public class ReservationManager {
 		{
 			reserveCode=String.format("%c%d", "I",randomNum);
 		}
+		
 		return reserveCode;
 	}
 	
-	//incomplete
 	private void populateFromBinary()
 	{
-		//reservations.clear();
 		
 	}
 }
