@@ -18,10 +18,11 @@ public class FlightManager
 	private ArrayList<Flight> flights;
 	private ArrayList<String> airports;
 	
-	public FlightManager()
+	public FlightManager() throws IOException
 	{
 		this.airports = new ArrayList<>();
 		this.flights = new ArrayList<>();
+		getFlights();
 	}
 	
 	public ArrayList<String> getAirports() throws IOException
@@ -62,7 +63,11 @@ public class FlightManager
 		
 		for(int i = 0; i<this.flights.size();i++)
 		{
-			if(this.flights.get(i).getFrom() == from && this.flights.get(i).getTo() == to && flights.get(i).getWeekday() == weekday)
+			if(this.flights.get(i).getFrom().equals(from) && this.flights.get(i).getTo().equals(to) && flights.get(i).getWeekday().equals(weekday))
+			{
+				flightsList.add(this.flights.get(i));
+			}
+			else if(this.flights.get(i).getFrom().equals(from) && this.flights.get(i).getTo().equals(to) && weekday.equals(WEEKDAY_ANY))
 			{
 				flightsList.add(this.flights.get(i));
 			}
@@ -73,7 +78,6 @@ public class FlightManager
 	private void populateFlights() throws IOException
 	{
 		String code, 
-			   airlineName,
 			   from,
 			   to,
 			   weekday,
@@ -87,7 +91,6 @@ public class FlightManager
 		while(flightRead.hasNext())
 		{
 			code = flightRead.next();
-			airlineName = flightRead.next();
 			from = flightRead.next();
 			to = flightRead.next();
 			weekday = flightRead.next();

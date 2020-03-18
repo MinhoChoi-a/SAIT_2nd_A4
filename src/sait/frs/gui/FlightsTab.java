@@ -169,7 +169,7 @@ public class FlightsTab extends TabBase
 		JButton reserveButton = new JButton("Reserve");
 		reserveButton.setFont(new Font("Tahoma", Font.BOLD, 15));
 		//action listener for button pressed
-		//reserveButton.addActionListener(new MakeReservation());
+		reserveButton.addActionListener(new MakeReservation());
 
 		panel.add(header, BorderLayout.NORTH);
 		panel.add(reserveButton, BorderLayout.SOUTH);

@@ -400,7 +400,7 @@ public class ReservationsTab extends TabBase {
 
 				codeField.setText(findR.getCode());
 				flightField.setText(findF.getCode());
-				airlineField.setText(findF.getAirline());
+				airlineField.setText(findF.getAirlineName());
 				costField.setText(cost);
 				nameField.setText(findR.getName());
 				citizenField.setText(findR.getCitizenship());

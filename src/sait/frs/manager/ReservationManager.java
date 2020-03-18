@@ -35,7 +35,7 @@ public class ReservationManager {
 		}
 	
 	
-	public ArrayList<Reservation> findReservation(String code, String airline, String name) throws IOException
+	public ArrayList<Reservation> findReservations(String code, String airline, String name) throws IOException
 	{
 		RandomAccessFile file = new RandomAccessFile("res/reservation.bin","r");
 				
