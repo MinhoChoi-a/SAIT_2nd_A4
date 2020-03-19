@@ -21,9 +21,9 @@ public class ReservationManager {
 			boolean active = true;
 									
 			file.seek(file.length());
-			file.writeUTF(reserveCode); // 2+2*5 = 12
-			file.writeUTF(flightCode); // 2+2*7 = 16 
-			file.writeUTF(airline); // 2+2*2 = 6
+			file.writeUTF(reserveCode); // 2+5 = 7
+			file.writeUTF(flightCode); // 2+7 = 9 
+			file.writeUTF(airline); // 2+2 = 4
 			file.writeUTF(name); //
 			file.writeUTF(citizenship);
 			file.writeDouble(cost);
@@ -106,12 +106,12 @@ public class ReservationManager {
 		while(d<file.length() && !check) {
 			
 			String rCodeCheck = file.readUTF();
+			String fCode = file.readUTF(); 
+			String aline = file.readUTF(); 
 			d = file.getFilePointer();
 			
 			if(!reserveCode.equals(rCodeCheck))
 			{
-			String fCode = file.readUTF(); 
-			String aline = file.readUTF(); 
 			String rName = file.readUTF(); 
 			String rCitizen = file.readUTF();
 			double rCost = file.readDouble();
@@ -120,11 +120,11 @@ public class ReservationManager {
 					
 			else
 			{
-			check = false;
+			check = true;
 			}
 			}
 			
-		file.seek(d + 22); //position to the name
+		file.seek(d); //position to the name
 		
 		file.writeUTF(name);
 		file.writeUTF(citizenship);
