@@ -315,15 +315,28 @@ public class ReservationsTab extends TabBase {
 			String code = codeInput.getText();
 			String airLine = airLineInput.getText();
 			String name = nameInput.getText();
-
-			reserve = manager.findReservations(code, airLine, name);
-
-			for (int i = 0; i < reserve.size(); i++) {
-				reserveCode.addElement(reserve.get(i).getCode());
+			
+			try 
+			{
+			reserve = manager.findReservation(code, airLine, name);
+			}
+			catch(IOException a) 
+			{
+			JOptionPane.showMessageDialog(null, "ioexception");
+			}
+			
+			try 
+			{
+				for (int i = 0; i < reserve.size(); i++) {
+				reserveCode.addElement(reserve.get(i).getCode());}
+			}
+			catch(NullPointerException b)
+			{
+				JOptionPane.showMessageDialog(null, "nullpointer");
 			}
 		}
 	}
-
+	
 	/**
 	 * Action listener to apply the change of active combobox
 	 * 
@@ -366,9 +379,12 @@ public class ReservationsTab extends TabBase {
 			try {
 				findR.setCitizenship(citizenField.getText());
 				findR.setName(nameField.getText());
-				manager.persist();
-			} catch (InvalidNameException | InvalidCitizenshipException ex) {
-
+				
+				try {manager.persist();}
+				catch(IOException a) {
+					JOptionPane.showMessageDialog(null, a.getMessage());}
+				} 
+			catch (InvalidNameException | InvalidCitizenshipException ex) {
 			}
 			JOptionPane.showMessageDialog(null, "Reservation Updated.");
 
@@ -395,12 +411,11 @@ public class ReservationsTab extends TabBase {
 			} else {
 
 				findR = manager.findReservationByCode(codeList.getSelectedValue());
-				findF = findR.getFlight();
-				String cost = String.format("$%.2f", findF.getCostPerSeat());
+				String cost = String.format("$%.2f", findR.getCost());
 
 				codeField.setText(findR.getCode());
-				flightField.setText(findF.getCode());
-				airlineField.setText(findF.getAirlineName());
+				flightField.setText(findR.getCode());
+				airlineField.setText(findR.getAirline());
 				costField.setText(cost);
 				nameField.setText(findR.getName());
 				citizenField.setText(findR.getCitizenship());

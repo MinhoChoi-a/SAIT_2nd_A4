@@ -8,7 +8,7 @@ import java.io.*;
 
 public class ReservationManager {
 
-	private ArrayList<Reservation> reservations; 
+	private ArrayList<Reservation> reservations = new ArrayList<Reservation>();	
 	
 	public Reservation makeReservation(Flight flight, String name, String citizenship) throws IOException
 		{
@@ -34,7 +34,8 @@ public class ReservationManager {
 			return reservation;
 		}
 	
-	public ArrayList<Reservation> findReservations(String code, String airline, String name) throws IOException
+	
+	public ArrayList<Reservation> findReservation(String code, String airline, String name) throws IOException
 	{
 		RandomAccessFile file = new RandomAccessFile("res/reservation.bin","r");
 				
@@ -58,24 +59,24 @@ public class ReservationManager {
 			rCitizen = file.readUTF();
 			rCost = file.readDouble();
 			act = file.readBoolean();
-						
+			
 			if(code.equals(rCode) || airline.equals(aline) || name.equals(rName))
 			{
 				Reservation res = new Reservation(rCode,fCode,aline,rName,rCitizen,rCost, act);
-				this.reservations.add(res);
-						
-				i = file.getFilePointer();
-			}}
-		
+				reservations.add(res);
+			} 
+			i = file.getFilePointer();	
+		}
 		file.close();
 			
-		return this.reservations;
+		return reservations;
 		}
 
-	public Reservation findReservationByCode(String code) throws IOException {
-		
+	public Reservation findReservationByCode(String code) {
+				
 		boolean check = false;
 		int i =0;	
+		
 		while(i<reservations.size() && !check) {
 			
 			String rCode = reservations.get(i).getCode();
@@ -84,22 +85,57 @@ public class ReservationManager {
 			{
 				check = true;
 			}
+			i++;
 		}
-				
-		return reservations.get(i);
+					
+		return reservations.get(i-1);
 	}
 	
 	public void persist() throws IOException
 	{
 		RandomAccessFile file = new RandomAccessFile("res/reservation.bin","rw");
-		int dataSize = 0;
+		file.seek(0);
 		
-		file.seek(file.getFilePointer() - dataSize);
+		String reserveCode = ReservationsTab.findR.getCode(); // 2+2*5 = 12
+		String name = ReservationsTab.findR.getName(); // 
+		String citizenship = ReservationsTab.findR.getCitizenship(); //
+		boolean active = ReservationsTab.findR.isActive(); // 1
 		
-		ReservationsTab.findR.getCode();
+		boolean check = false;
+		long d=0;	
+		while(d<file.length() && !check) {
 			
+			String rCodeCheck = file.readUTF();
+			d = file.getFilePointer();
+			
+			if(!reserveCode.equals(rCodeCheck))
+			{
+			String fCode = file.readUTF(); 
+			String aline = file.readUTF(); 
+			String rName = file.readUTF(); 
+			String rCitizen = file.readUTF();
+			double rCost = file.readDouble();
+			boolean act = file.readBoolean();
+			}
+					
+			else
+			{
+			check = false;
+			}
+			}
+			
+		file.seek(d + 22); //position to the name
+		
+		file.writeUTF(name);
+		file.writeUTF(citizenship);
+		
+		if(active==false)
+		{
+			//soft delete
+		}
 		
 		file.close();
+			
 	}
 	
 	private int getAvailableSeats(Flight flight)
@@ -109,6 +145,9 @@ public class ReservationManager {
 	
 	private String generateReservationCode(Flight flight)
 	{
+		
+		String from = flight.getFrom();
+		
 		boolean check = flight.isDomestic();
 					
 		Random rand = new Random();
