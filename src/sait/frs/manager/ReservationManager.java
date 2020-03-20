@@ -12,64 +12,58 @@ public class ReservationManager {
 	
 	public Reservation makeReservation(Flight flight, String name, String citizenship) throws IOException
 		{
-			RandomAccessFile file = new RandomAccessFile("res/reservation.bin","rw");
-			
+			FileOutputStream f = new FileOutputStream("res/reservation.bin", true);
+			ObjectOutputStream file = new ObjectOutputStream(f);
+				
 			String reserveCode = generateReservationCode(flight);
+			
 			String flightCode = flight.getCode();
 			String airline = flight.getAirlineName();
 			double cost = flight.getCostPerSeat();
 			boolean active = true;
-									
-			file.seek(file.length());
-			file.writeUTF(reserveCode); // 2+5 = 7
-			file.writeUTF(flightCode); // 2+7 = 9 
-			file.writeUTF(airline); // 2+2 = 4
-			file.writeUTF(name); //
-			file.writeUTF(citizenship);
-			file.writeDouble(cost);
-			file.writeBoolean(active);
-			file.close();
 			
 			Reservation reservation = new Reservation(reserveCode, flightCode, airline, name, citizenship, cost, active);
+			
+			try {
+			
+			file.writeObject(reserveCode);
+			file.writeObject(reservation);
+			file.close();
+			}
+			
+			catch (FileNotFoundException e) {
+				System.out.println("File not found");
+			} catch (IOException e) {
+				System.out.println("Error initializing stream");
+			}
+			
 			return reservation;
 		}
 	
-	
 	public ArrayList<Reservation> findReservation(String code, String airline, String name) throws IOException
 	{
-		RandomAccessFile file = new RandomAccessFile("res/reservation.bin","r");
+		ArrayList<Reservation> findReserve = new ArrayList<>();
+		
+		populateFromBinary();
 				
-		file.seek(0);
-		
-		String rCode="";
-		String fCode;
-		String aline="";
-		String rName;
-		String rCitizen;
-		double rCost;
-		boolean act;
-		
-		long i=0;	
-		while(i<file.length()) {
+		for(int i=0; i<reservations.size(); i++) {
 			
-			rCode = file.readUTF();
-			fCode = file.readUTF(); 
-			aline = file.readUTF(); 
-			rName = file.readUTF(); 
-			rCitizen = file.readUTF();
-			rCost = file.readDouble();
-			act = file.readBoolean();
+			String rCode = reservations.get(i).getCode();
+			String fCode = reservations.get(i).getFlightCode();
+			String aline = reservations.get(i).getAirline(); 
+			String rName = reservations.get(i).getName(); 
+			String rCitizen = reservations.get(i).getCitizenship();
+			double rCost = reservations.get(i).getCost();
+			boolean act = reservations.get(i).isActive();
 			
 			if(code.equals(rCode) || airline.equals(aline) || name.equals(rName))
 			{
 				Reservation res = new Reservation(rCode,fCode,aline,rName,rCitizen,rCost, act);
-				reservations.add(res);
+				findReserve.add(res);
 			} 
-			i = file.getFilePointer();	
 		}
-		file.close();
 			
-		return reservations;
+		return findReserve;
 		}
 
 	public Reservation findReservationByCode(String code) {
@@ -93,48 +87,60 @@ public class ReservationManager {
 	
 	public void persist() throws IOException
 	{
-		RandomAccessFile file = new RandomAccessFile("res/reservation.bin","rw");
-		file.seek(0);
-		
+		FileOutputStream nBin = new FileOutputStream("res/reservation.bin", false);
+		ObjectOutputStream nFile = new ObjectOutputStream(nBin);
+	
 		String reserveCode = ReservationsTab.findR.getCode(); // 2+2*5 = 12
 		String name = ReservationsTab.findR.getName(); // 
 		String citizenship = ReservationsTab.findR.getCitizenship(); //
 		boolean active = ReservationsTab.findR.isActive(); // 1
 		
 		boolean check = false;
-		long d=0;	
-		while(d<file.length() && !check) {
+		int i=0;	
+		while(i<reservations.size() && !check) {
 			
-			String rCodeCheck = file.readUTF();
-			String fCode = file.readUTF(); 
-			String aline = file.readUTF(); 
-			d = file.getFilePointer();
-			
-			if(!reserveCode.equals(rCodeCheck))
+			String rCodeCheck = reservations.get(i).getCode();
+						
+			if(reserveCode.equals(rCodeCheck))
 			{
-			String rName = file.readUTF(); 
-			String rCitizen = file.readUTF();
-			double rCost = file.readDouble();
-			boolean act = file.readBoolean();
+			check = true;
 			}
 					
 			else
 			{
-			check = true;
+			i++;
 			}
-			}
+		}
 			
-		file.seek(d); //position to the name
-		
-		file.writeUTF(name);
-		file.writeUTF(citizenship);
-		
+		reservations.get(i).setName(name);
+		reservations.get(i).setCitizenship(citizenship);
+		reservations.get(i).setActive(active);
+				
 		if(active==false)
 		{
 			//soft delete
 		}
 		
-		file.close();
+		try
+		{
+				for(int d=0; d<reservations.size(); d++)
+				{
+				nFile.writeObject(reservations.get(d).getCode());
+				nFile.writeObject(reservations.get(d));
+				}
+		}
+		
+			catch (EOFException e) {
+		    System.out.println("finnished writing");
+		}
+			catch (FileNotFoundException ex) {
+	        System.err.println("Error: the file was not found!");
+	    }
+			catch (IOException ex) {
+			ex.printStackTrace();
+			}
+		nFile.reset();
+		nFile.close();
 			
 	}
 	
@@ -169,8 +175,36 @@ public class ReservationManager {
 		return reserveCode;
 	}
 	
-	private void populateFromBinary()
+	private void populateFromBinary() throws IOException
 	{
+		reservations.clear();
+		FileInputStream bin = new FileInputStream("res/reservation.bin");
+		ObjectInputStream file = new ObjectInputStream(bin);
+		boolean eof = false;
 		
+		try
+		{
+			while(!eof) {
+				file.readObject();
+				Reservation reserve = (Reservation)file.readObject();
+				reservations.add(reserve);
+				
+				}
+		}
+			catch (EOFException e) {
+		    eof = true;
+			System.out.println("finnished reading");
+			file.close();
+		}
+			catch (ClassNotFoundException ex) {
+	        ex.printStackTrace();
+	    } 	
+			catch (FileNotFoundException ex) {
+	        System.err.println("Error: the file was not found!");
+	    }
+			catch (IOException ex) {
+			ex.printStackTrace();
+	    }
+			
 	}
 }
