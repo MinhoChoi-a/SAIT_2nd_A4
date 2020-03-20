@@ -12,9 +12,6 @@ public class ReservationManager {
 	
 	public Reservation makeReservation(Flight flight, String name, String citizenship) throws IOException
 		{
-			FileOutputStream f = new FileOutputStream("res/reservation.bin", true);
-			ObjectOutputStream file = new ObjectOutputStream(f);
-				
 			String reserveCode = generateReservationCode(flight);
 			
 			String flightCode = flight.getCode();
@@ -22,22 +19,11 @@ public class ReservationManager {
 			double cost = flight.getCostPerSeat();
 			boolean active = true;
 			
-			Reservation reservation = new Reservation(reserveCode, flightCode, airline, name, citizenship, cost, active);
+			ReservationsTab.findR = new Reservation(reserveCode, flightCode, airline, name, citizenship, cost, active);
+			reservations.add(ReservationsTab.findR);
+			persist();
 			
-			try {
-			
-			file.writeObject(reserveCode);
-			file.writeObject(reservation);
-			file.close();
-			}
-			
-			catch (FileNotFoundException e) {
-				System.out.println("File not found");
-			} catch (IOException e) {
-				System.out.println("Error initializing stream");
-			}
-			
-			return reservation;
+			return ReservationsTab.findR;
 		}
 	
 	public ArrayList<Reservation> findReservation(String code, String airline, String name) throws IOException
@@ -89,7 +75,7 @@ public class ReservationManager {
 	{
 		FileOutputStream nBin = new FileOutputStream("res/reservation.bin", false);
 		ObjectOutputStream nFile = new ObjectOutputStream(nBin);
-	
+		
 		String reserveCode = ReservationsTab.findR.getCode(); // 2+2*5 = 12
 		String name = ReservationsTab.findR.getName(); // 
 		String citizenship = ReservationsTab.findR.getCitizenship(); //
@@ -138,7 +124,7 @@ public class ReservationManager {
 	    }
 			catch (IOException ex) {
 			ex.printStackTrace();
-			}
+		}
 		nFile.reset();
 		nFile.close();
 			

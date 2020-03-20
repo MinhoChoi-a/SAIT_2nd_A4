@@ -557,6 +557,7 @@ public class FlightsTab extends TabBase
 			{
 				//creates reservation when no exceptions are thrown
 				reservation = reservationManager.makeReservation(flightsList.getSelectedValue(), nameText.getText(), citizenshipText.getText());
+				
 			}
 			catch(IOException j)
 			{
