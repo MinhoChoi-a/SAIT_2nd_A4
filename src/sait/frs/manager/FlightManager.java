@@ -3,7 +3,16 @@ package sait.frs.manager;
 import java.util.*;
 import sait.frs.problemdomain.*;
 import java.io.*;
+import sait.frs.application.*;
 
+/**
+ * This class manages the flights.
+ * 
+ * @author Minho Choi 812108 Section CC
+ * @author Michael Doctor 820167 Section CCC
+ * @version 1.0, March 20, 2020
+ *
+ */
 public class FlightManager
 {
 	public final static String WEEKDAY_ANY = "Any",
@@ -18,30 +27,53 @@ public class FlightManager
 	private ArrayList<Flight> flights;
 	private ArrayList<String> airports;
 	
+	/**
+	 * This constructor method instantiates two new ArrayLists and calls the getFlights method.
+	 * @throws IOException
+	 */
 	public FlightManager() throws IOException
 	{
 		this.airports = new ArrayList<>();
 		this.flights = new ArrayList<>();
-		getFlights();
+		populateAirports();
+		populateFlights();
 	}
 	
+	/**
+	 * This method populates the airports ArrayList and returns it.
+	 * @return The airports ArrayList.
+	 * @throws IOException
+	 */
 	public ArrayList<String> getAirports() throws IOException
 	{
-		populateAirports();
 		return airports;
 	}
 	
+	/**
+	 * This method populates the flights ArrayList and returns it.
+	 * @return The flights ArrayList.
+	 * @throws IOException
+	 */
 	public ArrayList<Flight> getFlights() throws IOException
 	{
-		populateFlights();
 		return flights;
 	}
 	
+	/**
+	 * This method returns the airport name based on the airport code.
+	 * @param code Flight's code.
+	 * @return The full name of the airport.
+	 */
 	public String findAirportByCode(String code)
 	{
 		return airports.get(airports.indexOf(code) + 1);
 	}
 	
+	/**
+	 * This method finds a flight based on the provided flight code.
+	 * @param code Flight's code.
+	 * @return The flight with that specific flight code.
+	 */
 	public Flight findFlightByCode(String code)
 	{
 		int position = 0;
@@ -56,6 +88,14 @@ public class FlightManager
 		return flights.get(position);
 	}
 	
+	/**
+	 * This method finds matching flights based on the departing airport, arrival airport, and day of flight. 
+	 * The matching airports 
+	 * @param from Departing airport code.
+	 * @param to Arrival airport code.
+	 * @param weekday The day of the flight.
+	 * @return An ArrayList containing matching flights.
+	 */
 	public ArrayList<Flight> findFlights(String from, String to, String weekday)
 	{
 		ArrayList<Flight> flightsList = new ArrayList<>();
@@ -75,6 +115,10 @@ public class FlightManager
 		return flightsList;
 	}
 	
+	/**
+	 * This method populates the flights ArrayList from the provided database.
+	 * @throws IOException
+	 */
 	private void populateFlights() throws IOException
 	{
 		String code, 
@@ -85,7 +129,10 @@ public class FlightManager
 		int seats;
 		double costPerSeat;
 		
-		File file = new File("res/flights.csv");//FIX LATER
+		Scanner keyboard = new Scanner(System.in);
+		AppDriver app = new AppDriver(keyboard);
+		
+		File file = new File(app.getLocation()+"/res/flights.csv");//FIX LATER
 		Scanner flightRead = new Scanner(file);
 		flightRead.useDelimiter(",");
 		while(flightRead.hasNext())
@@ -103,16 +150,22 @@ public class FlightManager
 			
 		}
 		flightRead.close();
+		keyboard.close();
 	}
 	
+	/**
+	 * This method populates the airports ArrayList from the provided database.
+	 * @throws IOException
+	 */
 	private void populateAirports() throws IOException
 	{
 		String code,
 			   airport;
-		
+		Scanner keyboard = new Scanner(System.in);
+		AppDriver app = new AppDriver(keyboard);
 		this.airports = new ArrayList<>();
 		
-		File file = new File("res/airports.csv");
+		File file = new File(app.getLocation()+"/res/airports.csv");
 		Scanner read = new Scanner(file);
 		read.useDelimiter(",");
 		
