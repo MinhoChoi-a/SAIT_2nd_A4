@@ -1,6 +1,9 @@
 package sait.frs.problemdomain;
 
-public class Reservation {
+import java.io.*;
+import java.util.*;
+
+public class Reservation implements Serializable{
 	
 	private String code;
 	private String flightCode;
@@ -15,15 +18,7 @@ public class Reservation {
 		
 	}
 	
-	public Reservation(String code, String flightCode, String airline, String name, String citizenship, double cost)
-	{
-		this.code = code;
-		this.flightCode = flightCode;
-		this.airline = airline;
-		this.name = name;
-		this.citizenship = citizenship;
-		this.cost = cost;	
-	}
+	
 	
 	public Reservation(String code, String flightCode, String airline, String name, String citizenship, double cost,boolean active)
 	{
@@ -117,7 +112,17 @@ public class Reservation {
 	}
 	
 	public String toString() {
-		String a ="";
-		return a;
+		
+		ArrayList<String> reserv = new ArrayList<String>();
+		
+		reserv.add(getCode());
+		reserv.add(getFlightCode());
+		reserv.add(getAirline());
+		reserv.add(getName());
+		reserv.add(getCitizenship());
+		reserv.add(String.valueOf(getCost()));
+		reserv.add(String.valueOf(isActive()));
+		
+		return reserv.toString();
 	}
 }

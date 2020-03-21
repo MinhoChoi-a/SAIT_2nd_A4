@@ -379,12 +379,10 @@ public class ReservationsTab extends TabBase {
 			try {
 				findR.setCitizenship(citizenField.getText());
 				findR.setName(nameField.getText());
-				
-				try {manager.persist();}
-				catch(IOException a) {
-					JOptionPane.showMessageDialog(null, a.getMessage());}
-				} 
-			catch (InvalidNameException | InvalidCitizenshipException ex) {
+				manager.persist();
+			} 
+			catch (IOException o) {
+				JOptionPane.showMessageDialog(null, "IOException");
 			}
 			JOptionPane.showMessageDialog(null, "Reservation Updated.");
 
@@ -414,7 +412,7 @@ public class ReservationsTab extends TabBase {
 				String cost = String.format("$%.2f", findR.getCost());
 
 				codeField.setText(findR.getCode());
-				flightField.setText(findR.getCode());
+				flightField.setText(findR.getFlightCode());
 				airlineField.setText(findR.getAirline());
 				costField.setText(cost);
 				nameField.setText(findR.getName());
