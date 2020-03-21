@@ -4,15 +4,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-
 import javax.swing.*;
 import javax.swing.event.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
 import sait.frs.exception.InvalidCitizenshipException;
 import sait.frs.exception.InvalidNameException;
-
 import sait.frs.gui.*;
 import sait.frs.manager.*;
 import sait.frs.problemdomain.*;

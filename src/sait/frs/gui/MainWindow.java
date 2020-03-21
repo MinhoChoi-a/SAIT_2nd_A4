@@ -3,9 +3,8 @@ package sait.frs.gui;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-
 import javax.swing.*;
-
+import sait.frs.application.*;
 import sait.frs.manager.*;
 
 
@@ -70,8 +69,10 @@ public class MainWindow extends JFrame
 	 */
 	public MainWindow() throws IOException
 	{
-		this.flightManager = new FlightManager();
-		this.reservationManager = new ReservationManager();
+		AppDriver app = new AppDriver();
+		String location = app.getLocation();
+		this.flightManager = new FlightManager(location);
+		this.reservationManager = new ReservationManager(location);
 		
 		setTitle("Flight Reservation Management System");
 		

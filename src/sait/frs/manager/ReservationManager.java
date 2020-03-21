@@ -8,8 +8,14 @@ import java.io.*;
 
 public class ReservationManager {
 
-	private ArrayList<Reservation> reservations = new ArrayList<Reservation>();	
+	private ArrayList<Reservation> reservations;
+	private String location;
 	
+	public ReservationManager(String location)
+	{
+		this.location = location;
+		reservations = new ArrayList<Reservation>();	
+	}
 	public Reservation makeReservation(Flight flight, String name, String citizenship) throws IOException
 		{
 			String reserveCode = generateReservationCode(flight);
@@ -73,7 +79,7 @@ public class ReservationManager {
 	
 	public void persist() throws IOException
 	{
-		FileOutputStream nBin = new FileOutputStream("res/reservation.bin", false);
+		FileOutputStream nBin = new FileOutputStream(location+"/res/reservation.bin", false);
 		ObjectOutputStream nFile = new ObjectOutputStream(nBin);
 		
 		String reserveCode = ReservationsTab.findR.getCode(); // 2+2*5 = 12
@@ -164,7 +170,7 @@ public class ReservationManager {
 	private void populateFromBinary() throws IOException
 	{
 		reservations.clear();
-		FileInputStream bin = new FileInputStream("res/reservation.bin");
+		FileInputStream bin = new FileInputStream(location+"/res/reservation.bin");
 		ObjectInputStream file = new ObjectInputStream(bin);
 		boolean eof = false;
 		
