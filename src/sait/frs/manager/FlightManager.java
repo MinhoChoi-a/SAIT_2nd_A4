@@ -26,13 +26,15 @@ public class FlightManager
 	
 	private ArrayList<Flight> flights;
 	private ArrayList<String> airports;
+	private String location;
 	
 	/**
 	 * This constructor method instantiates two new ArrayLists and calls the getFlights method.
 	 * @throws IOException
 	 */
-	public FlightManager() throws IOException
+	public FlightManager(String location) throws IOException
 	{
+		this.location = location;
 		this.airports = new ArrayList<>();
 		this.flights = new ArrayList<>();
 		populateAirports();
@@ -129,10 +131,8 @@ public class FlightManager
 		int seats;
 		double costPerSeat;
 		
-		Scanner keyboard = new Scanner(System.in);
-		AppDriver app = new AppDriver(keyboard);
 		
-		File file = new File(app.getLocation()+"/res/flights.csv");//FIX LATER
+		File file = new File(location+"/res/flights.csv");//FIX LATER
 		Scanner flightRead = new Scanner(file);
 		flightRead.useDelimiter(",");
 		while(flightRead.hasNext())
@@ -150,7 +150,6 @@ public class FlightManager
 			
 		}
 		flightRead.close();
-		keyboard.close();
 	}
 	
 	/**
@@ -161,11 +160,9 @@ public class FlightManager
 	{
 		String code,
 			   airport;
-		Scanner keyboard = new Scanner(System.in);
-		AppDriver app = new AppDriver(keyboard);
 		this.airports = new ArrayList<>();
 		
-		File file = new File(app.getLocation()+"/res/airports.csv");
+		File file = new File(location+"/res/airports.csv");
 		Scanner read = new Scanner(file);
 		read.useDelimiter(",");
 		

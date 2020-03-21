@@ -3,6 +3,8 @@ package sait.frs.application;
 import java.io.*;
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 import sait.frs.gui.*;
 
 /**
@@ -24,12 +26,10 @@ public class AppDriver
 	 * 
 	 * @param keyboard Scanner using the standard input.
 	 */
-	public AppDriver(Scanner keyboard)
+	public AppDriver()
 	{
-		System.out.print("Enter path to the folder containing the jar file: ");
-		String temp = keyboard.nextLine();
+		String temp = JOptionPane.showInputDialog("Enter path to the folder containing the jar file: ");
 		location = temp.replace("\\", "/");
-
 	}
 
 	/**

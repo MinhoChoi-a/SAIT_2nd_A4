@@ -119,6 +119,22 @@ public class Flight
 	{
 		return seats;
 	}
+	
+
+	
+	public int updateSeats(boolean remove)
+	{
+		if(remove)
+		{
+			this.seats -= 1;
+		}
+		else
+		{
+			this.seats += 1;
+		}
+
+		return seats;
+	}
 
 	/**
 	 * Get cost of a seat.
