@@ -8,11 +8,18 @@ import java.io.*;
 
 public class ReservationManager {
 
-	private ArrayList<Reservation> reservations = new ArrayList<Reservation>();	
+	private ArrayList<Reservation> reservations;
+	private String location;
+	
+	public ReservationManager(String location)
+	{
+		this.location = location;
+		reservations = new ArrayList<Reservation>();	
+	}
 	
 	public Reservation makeReservation(Flight flight, String name, String citizenship) throws IOException
-		{
-			RandomAccessFile file = new RandomAccessFile("res/reservation.bin","rw");
+	{
+			RandomAccessFile file = new RandomAccessFile(location+"/res/reservation.bin","rw");
 			
 			file.seek(file.length()); // end of file
 			
@@ -38,10 +45,10 @@ public class ReservationManager {
 			
 			
 			// edit available seats information
-			FlightManager fManager = new FlightManager();
+			FlightManager fManager = new FlightManager(location);
 			ArrayList<Flight> fList = fManager.getFlights();
 			
-			PrintWriter write = new PrintWriter("res/flights.csv"); //overwrite file with update
+			PrintWriter write = new PrintWriter(location+"/res/flights.csv"); //overwrite file with update
 			
 			for(int i =0; i< fList.size(); i++)
 			{
@@ -58,14 +65,14 @@ public class ReservationManager {
 			write.close();
 			
 			return reservation;
-		}
+	}
 	
 	
 	public ArrayList<Reservation> findReservation(String code, String airline, String name) throws IOException
 	{
 		ArrayList<Reservation> findReserve = new ArrayList<>();
 		
-		populate();
+		populateBinary();
 				
 		for(int i=0; i<reservations.size(); i++) {
 			
@@ -109,7 +116,7 @@ public class ReservationManager {
 	
 	public void persist() throws IOException
 	{
-		RandomAccessFile file = new RandomAccessFile("res/reservation.bin","rw");
+		RandomAccessFile file = new RandomAccessFile(location+"/res/reservation.bin","rw");
 		file.seek(0);
 		
 		String reserveCode = ReservationsTab.findR.getCode(); // 2+2*5 = 12
@@ -119,7 +126,9 @@ public class ReservationManager {
 		String act=""; //show the reservation status
 		
 		if(active==true)
-		{act="active";}
+		{
+			act="active";
+		}
 		
 		boolean check = false;
 		
@@ -140,7 +149,6 @@ public class ReservationManager {
 			{
 			boolean f= file.readBoolean();
 			}
-			
 			else
 			{
 			check = true;
@@ -164,11 +172,11 @@ public class ReservationManager {
 		
 		if(active==false)
 		{
-			FlightManager fManager = new FlightManager();
+			FlightManager fManager = new FlightManager(location);
 			
 			ArrayList<Flight> fList = fManager.getFlights();
 			
-			PrintWriter write = new PrintWriter("res/flights.csv");
+			PrintWriter write = new PrintWriter(location+"/res/flights.csv");
 			
 			for(int i =0; i< fList.size(); i++)
 				
@@ -214,10 +222,10 @@ public class ReservationManager {
 		return reserveCode;
 	}
 	
-	private void populate() throws IOException
+	private void populateBinary() throws IOException
 	{
 		reservations.clear();
-		RandomAccessFile file = new RandomAccessFile("res/reservation.bin","r");
+		RandomAccessFile file = new RandomAccessFile(location+"/res/reservation.bin","r");
 		
 		file.seek(0);
 		
@@ -235,18 +243,30 @@ public class ReservationManager {
 				String act = file.readUTF();
 				
 				if(act.equals("active"))
-				{active = true;	}
+				{
+					active = true;	
+				}
 				else
-				{active = false;}
+				{
+					active = false;
+				}
 				
 				Boolean b = file.readBoolean();
+				if(!b)
+				{
+					i=file.getFilePointer();
+				}
+				else
+				{
+					Reservation reserve = 
+							new Reservation(rCode,fCode,aline,name,citizen,cost,active);
+					
+					reservations.add(reserve);
+					
+					i=file.getFilePointer();
+				}
 				
-				Reservation reserve = 
-						new Reservation(rCode,fCode,aline,name,citizen,cost,active);
 				
-				reservations.add(reserve);
-				
-				i=file.getFilePointer();
 				}
 			file.close();
 		}
