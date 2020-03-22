@@ -8,35 +8,64 @@ import java.io.*;
 
 public class ReservationManager {
 
-	private ArrayList<Reservation> reservations;
-	private String location;
+	private ArrayList<Reservation> reservations = new ArrayList<Reservation>();	
 	
-	public ReservationManager(String location)
-	{
-		this.location = location;
-		reservations = new ArrayList<Reservation>();	
-	}
 	public Reservation makeReservation(Flight flight, String name, String citizenship) throws IOException
 		{
-			String reserveCode = generateReservationCode(flight);
+			RandomAccessFile file = new RandomAccessFile("res/reservation.bin","rw");
 			
+			file.seek(file.length()); // end of file
+			
+			String reserveCode = generateReservationCode(flight);
 			String flightCode = flight.getCode();
 			String airline = flight.getAirlineName();
 			double cost = flight.getCostPerSeat();
-			boolean active = true;
+			String active = "active"; // show the reservation status
+			boolean keep = true; // flag data for soft delete
 			
-			ReservationsTab.findR = new Reservation(reserveCode, flightCode, airline, name, citizenship, cost, active);
-			reservations.add(ReservationsTab.findR);
-			persist();
+			file.writeUTF(reserveCode);
+			file.writeUTF(flightCode); 
+			file.writeUTF(airline);
+			file.writeUTF(name);
+			file.writeUTF(citizenship);
+			file.writeDouble(cost);
+			file.writeUTF(active);
+			file.writeBoolean(keep);
 			
-			return ReservationsTab.findR;
+			file.close();
+			
+			Reservation reservation = new Reservation(reserveCode, flightCode, airline, name, citizenship, cost, keep);
+			
+			
+			// edit available seats information
+			FlightManager fManager = new FlightManager();
+			ArrayList<Flight> fList = fManager.getFlights();
+			
+			PrintWriter write = new PrintWriter("res/flights.csv"); //overwrite file with update
+			
+			for(int i =0; i< fList.size(); i++)
+			{
+				if((fList.get(i).getCode()).equals(flightCode))
+				{
+					fList.get(i).updateSeats(true);
+					write.write(fList.get(i).toString());
+				}
+				else
+				{
+					write.write(fList.get(i).toString());
+				}
+			}
+			write.close();
+			
+			return reservation;
 		}
+	
 	
 	public ArrayList<Reservation> findReservation(String code, String airline, String name) throws IOException
 	{
 		ArrayList<Reservation> findReserve = new ArrayList<>();
 		
-		populateFromBinary();
+		populate();
 				
 		for(int i=0; i<reservations.size(); i++) {
 			
@@ -53,8 +82,9 @@ public class ReservationManager {
 				Reservation res = new Reservation(rCode,fCode,aline,rName,rCitizen,rCost, act);
 				findReserve.add(res);
 			} 
+				
 		}
-			
+					
 		return findReserve;
 		}
 
@@ -79,62 +109,82 @@ public class ReservationManager {
 	
 	public void persist() throws IOException
 	{
-		FileOutputStream nBin = new FileOutputStream(location+"/res/reservation.bin", false);
-		ObjectOutputStream nFile = new ObjectOutputStream(nBin);
+		RandomAccessFile file = new RandomAccessFile("res/reservation.bin","rw");
+		file.seek(0);
 		
 		String reserveCode = ReservationsTab.findR.getCode(); // 2+2*5 = 12
 		String name = ReservationsTab.findR.getName(); // 
 		String citizenship = ReservationsTab.findR.getCitizenship(); //
 		boolean active = ReservationsTab.findR.isActive(); // 1
+		String act=""; //show the reservation status
+		
+		if(active==true)
+		{act="active";}
 		
 		boolean check = false;
-		int i=0;	
-		while(i<reservations.size() && !check) {
+		
+		long d=0;	
+		
+		while(d<file.length() && !check) {
 			
-			String rCodeCheck = reservations.get(i).getCode();
-						
-			if(reserveCode.equals(rCodeCheck))
+			String rCodeCheck = file.readUTF();
+			String code = file.readUTF(); //fcode 
+			String air= file.readUTF(); //airline 
+			String n = file.readUTF(); //name 
+			String c = file.readUTF(); //citizen
+			double ct = file.readDouble(); //cost
+			String ac = file.readUTF();
+			d = file.getFilePointer();
+			
+			if(!reserveCode.equals(rCodeCheck))
 			{
-			check = true;
+			boolean f= file.readBoolean();
 			}
-					
+			
 			else
 			{
-			i++;
+			check = true;
+			file.seek(d);
+			file.writeBoolean(false); //soft delete
 			}
 		}
-			
-		reservations.get(i).setName(name);
-		reservations.get(i).setCitizenship(citizenship);
-		reservations.get(i).setActive(active);
-				
+		
+		file.seek(file.length()); //to the end of file
+		
+		file.writeUTF(reserveCode);
+		file.writeUTF(ReservationsTab.findR.getFlightCode());
+		file.writeUTF(ReservationsTab.findR.getAirline());
+		file.writeUTF(name);
+		file.writeUTF(citizenship);
+		file.writeDouble(ReservationsTab.findR.getCost());
+		file.writeUTF(act);
+		file.writeBoolean(true);
+		
+		file.close();
+		
 		if(active==false)
 		{
-			//soft delete
-		}
-		
-		try
-		{
-				for(int d=0; d<reservations.size(); d++)
-				{
-				nFile.writeObject(reservations.get(d).getCode());
-				nFile.writeObject(reservations.get(d));
-				}
-		}
-		
-			catch (EOFException e) {
-		    System.out.println("finnished writing");
-		}
-			catch (FileNotFoundException ex) {
-	        System.err.println("Error: the file was not found!");
-	    }
-			catch (IOException ex) {
-			ex.printStackTrace();
-		}
-		nFile.reset();
-		nFile.close();
+			FlightManager fManager = new FlightManager();
 			
-	}
+			ArrayList<Flight> fList = fManager.getFlights();
+			
+			PrintWriter write = new PrintWriter("res/flights.csv");
+			
+			for(int i =0; i< fList.size(); i++)
+				
+				if(fList.get(i).getCode().equals(ReservationsTab.findR.getFlightCode()))
+				{
+					fList.get(i).updateSeats(false);
+					write.write(fList.get(i).toString());
+				}
+				else
+				{
+					write.write(fList.get(i).toString());
+				}
+			write.close();	
+		}
+		
+	}	
 	
 	private int getAvailableSeats(Flight flight)
 	{
@@ -143,9 +193,6 @@ public class ReservationManager {
 	
 	private String generateReservationCode(Flight flight)
 	{
-		
-		String from = flight.getFrom();
-		
 		boolean check = flight.isDomestic();
 					
 		Random rand = new Random();
@@ -167,36 +214,41 @@ public class ReservationManager {
 		return reserveCode;
 	}
 	
-	private void populateFromBinary() throws IOException
+	private void populate() throws IOException
 	{
 		reservations.clear();
-		FileInputStream bin = new FileInputStream(location+"/res/reservation.bin");
-		ObjectInputStream file = new ObjectInputStream(bin);
-		boolean eof = false;
+		RandomAccessFile file = new RandomAccessFile("res/reservation.bin","r");
 		
-		try
-		{
-			while(!eof) {
-				file.readObject();
-				Reservation reserve = (Reservation)file.readObject();
+		file.seek(0);
+		
+		long i = 0;
+		boolean active = true;
+		
+		// load data from binary(RAF)
+			while(i < file.length()) {
+				String rCode = file.readUTF();
+				String fCode = file.readUTF(); 
+				String aline = file.readUTF();
+				String name = file.readUTF();
+				String citizen = file.readUTF();
+				Double cost = file.readDouble(); 
+				String act = file.readUTF();
+				
+				if(act.equals("active"))
+				{active = true;	}
+				else
+				{active = false;}
+				
+				Boolean b = file.readBoolean();
+				
+				Reservation reserve = 
+						new Reservation(rCode,fCode,aline,name,citizen,cost,active);
+				
 				reservations.add(reserve);
 				
+				i=file.getFilePointer();
 				}
-		}
-			catch (EOFException e) {
-		    eof = true;
-			System.out.println("finnished reading");
 			file.close();
 		}
-			catch (ClassNotFoundException ex) {
-	        ex.printStackTrace();
-	    } 	
-			catch (FileNotFoundException ex) {
-	        System.err.println("Error: the file was not found!");
-	    }
-			catch (IOException ex) {
-			ex.printStackTrace();
-	    }
-			
-	}
+		
 }
