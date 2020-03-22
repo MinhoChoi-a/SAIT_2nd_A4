@@ -1,24 +1,29 @@
 package sait.frs.problemdomain;
 
-import java.io.*;
-import java.util.*;
+/**
+ * This class is the reservation class that store the reservation data
+ * 
+ * @author Minho Choi 812108 Section CC
+ * @author Michael Doctor 820167 Section CCC
+ * @version 1.0, March 22, 2020
+ *
+ */
 
-public class Reservation implements Serializable{
+public class Reservation {
 	
-	private String code;
-	private String flightCode;
-	private String airline;
+	private String code; //reservation code
+	private String flightCode; //flight code
+	private String airline; //airline name
 	private String name;
 	private String citizenship;
 	private double cost;
 	private boolean active;
 	
+	//default constructor
 	public Reservation()
 	{
 		
 	}
-	
-	
 	
 	public Reservation(String code, String flightCode, String airline, String name, String citizenship, double cost,boolean active)
 	{
@@ -34,6 +39,7 @@ public class Reservation implements Serializable{
 	}
 
 	/**
+	 * get the reservation code
 	 * @return the code
 	 */
 	public String getCode() {
@@ -41,6 +47,7 @@ public class Reservation implements Serializable{
 	}
 
 	/**
+	 * get the flight code
 	 * @return the flightCode
 	 */
 	public String getFlightCode() {
@@ -49,6 +56,7 @@ public class Reservation implements Serializable{
 
 
 	/**
+	 * get the airline name
 	 * @return the airline
 	 */
 	public String getAirline() {
@@ -56,6 +64,7 @@ public class Reservation implements Serializable{
 	}
 
 	/**
+	 * get the name
 	 * @return the name
 	 */
 	public String getName() {
@@ -63,6 +72,7 @@ public class Reservation implements Serializable{
 	}
 
 	/**
+	 * change the name
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
@@ -70,6 +80,7 @@ public class Reservation implements Serializable{
 	}
 
 	/**
+	 * get the citizenship
 	 * @return the citizenship
 	 */
 	public String getCitizenship() {
@@ -77,6 +88,7 @@ public class Reservation implements Serializable{
 	}
 
 	/**
+	 * change the citizenship
 	 * @param citizenship the citizenship to set
 	 */
 	public void setCitizenship(String citizenship) {
@@ -84,20 +96,16 @@ public class Reservation implements Serializable{
 	}
 
 	/**
+	 * get the cost
 	 * @return the cost
 	 */
 	public double getCost() {
 		return cost;
 	}
 
+	
 	/**
-	 * @param cost the cost to set
-	 */
-	public void setCost(double cost) {
-		this.cost = cost;
-	}
-
-	/**
+	 * get the active information
 	 * @return the active
 	 */
 	public boolean isActive() {
@@ -105,24 +113,19 @@ public class Reservation implements Serializable{
 	}
 
 	/**
+	 * change the active
 	 * @param active the active to set
 	 */
 	public void setActive(boolean active) {
 		this.active = active;
 	}
 	
+	/**
+	 * make the field of reservation class to the string data
+	 */
 	public String toString() {
-		
-		ArrayList<String> reserv = new ArrayList<String>();
-		
-		reserv.add(getCode());
-		reserv.add(getFlightCode());
-		reserv.add(getAirline());
-		reserv.add(getName());
-		reserv.add(getCitizenship());
-		reserv.add(String.valueOf(getCost()));
-		reserv.add(String.valueOf(isActive()));
-		
-		return reserv.toString();
+		String toString;
+		toString = String.format("%s,%s,%s,%s,%s,%.2f,%b%n", code, flightCode, airline, name, citizenship,cost,active);
+		return toString;
 	}
 }

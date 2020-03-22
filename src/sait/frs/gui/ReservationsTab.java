@@ -8,7 +8,6 @@ import javax.swing.*;
 import javax.swing.event.*;
 import sait.frs.exception.InvalidCitizenshipException;
 import sait.frs.exception.InvalidNameException;
-import sait.frs.gui.*;
 import sait.frs.manager.*;
 import sait.frs.problemdomain.*;
 //import sait.frs.gui.FlightsTab.MyListSelectionListener;
@@ -42,11 +41,10 @@ public class ReservationsTab extends TabBase {
 	private JTextField codeField, flightField, airlineField, costField, nameField, citizenField;
 	
 	// active combobox
-	private JComboBox comboBox;
+	private JComboBox<String> comboBox;
 	
 	// data type of Reservation, Flight class
 	public static Reservation findR;
-	private Flight findF;
 
 	/**
 	 * Creates the components for reservations tab.
@@ -201,7 +199,7 @@ public class ReservationsTab extends TabBase {
 		fieldPanel.add(citizenField);
 
 		final String[] status = { "Active", "Inactive" };
-		comboBox = new JComboBox(status);
+		comboBox = new JComboBox<>(status);
 		fieldPanel.add(comboBox);
 		comboBox.addActionListener(new selectChange());
 
