@@ -17,9 +17,11 @@ public class FlightManager
 	
 	private ArrayList<Flight> flights;
 	private ArrayList<String> airports;
+	private String location;
 	
-	public FlightManager() throws IOException
+	public FlightManager(String location) throws IOException
 	{
+		this.location = location;
 		this.airports = new ArrayList<>();
 		this.flights = new ArrayList<>();
 		getFlights();
@@ -86,7 +88,7 @@ public class FlightManager
 		double costPerSeat;
 		flights.clear();
 		
-		File file = new File("res/flights.csv");//FIX LATER
+		File file = new File(location + "/res/flights.csv");//FIX LATER
 		Scanner flightRead = new Scanner(file);
 		flightRead.useDelimiter(",");
 		while(flightRead.hasNext())
@@ -113,7 +115,7 @@ public class FlightManager
 		
 		this.airports = new ArrayList<>();
 		
-		File file = new File("res/airports.csv");
+		File file = new File(location+"/res/airports.csv");
 		Scanner read = new Scanner(file);
 		read.useDelimiter(",");
 		
