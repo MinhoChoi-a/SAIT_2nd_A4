@@ -1,5 +1,13 @@
 package sait.frs.problemdomain;
 
+/**
+ * This class creates a Flight object.
+ * 
+ * @author Minho Choi 812108 Section CC
+ * @author Michael Doctor 820167 Section CCC
+ * @version 1.0, March 20, 2020
+ *
+ */
 public class Flight {
 	private String code, 
 				   airlineName,
@@ -10,11 +18,24 @@ public class Flight {
 	private int seats;
 	private double costPerSeat;
 	
+	/**
+	 * No argument constructor.
+	 */
 	public Flight()
 	{
 		
 	}
 	
+	/**
+	 * Flight constructor with arguments.
+	 * @param code Flight's code.
+	 * @param from Departing airport code.
+	 * @param to Arrival airport code.
+	 * @param weekday Day of flight.
+	 * @param time Time of flight.
+	 * @param seats Number of available seats.
+	 * @param costPerSeat Cost of flight seat.
+	 */
 	public Flight(String code, String from, String to, String weekday, String time,
 			int seats, double costPerSeat)
 	{
@@ -31,7 +52,7 @@ public class Flight {
 
 	/**
 	 * Get Flight Code.
-	 * @return the code
+	 * @return the flight code.
 	 */
 	public String getCode()
 	{
@@ -40,7 +61,7 @@ public class Flight {
 
 	/**
 	 * Get airline name.
-	 * @return the airlineName
+	 * @return the name of the airline.
 	 */
 	public String getAirlineName()
 	{
@@ -49,7 +70,7 @@ public class Flight {
 
 	/**
 	 * Get departing airport code.
-	 * @return the from
+	 * @return the departing airport code.
 	 */
 	public String getFrom()
 	{
@@ -58,7 +79,7 @@ public class Flight {
 
 	/**
 	 * Get arrival airport code.
-	 * @return the to
+	 * @return the arrival airport code.
 	 */
 	public String getTo()
 	{
@@ -67,7 +88,7 @@ public class Flight {
 
 	/**
 	 * Get weekday.
-	 * @return the weekday
+	 * @return the day of the flight.
 	 */
 	public String getWeekday()
 	{
@@ -76,7 +97,7 @@ public class Flight {
 
 	/**
 	 * Get time of flight.
-	 * @return the time
+	 * @return the time of the flight.
 	 */
 	public String getTime()
 	{
@@ -85,7 +106,7 @@ public class Flight {
 
 	/**
 	 * Get number of seats available.
-	 * @return the seats
+	 * @return the number of available seats.
 	 */
 	public int getSeats()
 	{
@@ -94,13 +115,17 @@ public class Flight {
 
 	/**
 	 * Get cost of a seat.
-	 * @return the costPerSeat
+	 * @return the cost of a seat.
 	 */
 	public double getCostPerSeat()
 	{
 		return costPerSeat;
 	}
 	
+	/**
+	 * This method checks if a flight is domestic.
+	 * @return a boolean if the flight is within Canada.
+	 */
 	public boolean isDomestic()
 	{
 		boolean domestic;
@@ -117,6 +142,10 @@ public class Flight {
 		
 	}
 	
+	/**
+	 * This method converts the flight code to the full airline name.
+	 * @param code Flight's code.
+	 */
 	private void parseCode(String code)
 	{
 		if(code.substring(0, 2).equals("OA"))
@@ -141,9 +170,13 @@ public class Flight {
 		}
 	}
 
-	
+	/**
+	 * This method updates the number of seats of a flight.
+	 * @param remove Boolean deciding if seats should be added or removed from flight.
+	 */
 	public void updateSeats(boolean remove)
 	{
+
 		if(remove)
 		{
 			this.seats -= 1;
@@ -155,12 +188,17 @@ public class Flight {
 		
 	}
 	
+	/**
+	 * This method returns the data of the flight.
+	 * @return The flight's data.
+	 */
 	public String toString()
 	{
 		String toString;
 		toString = String.format("%s,%s,%s,%s,%s,%d,%.2f%n", code, from, to, weekday, time,seats,costPerSeat);
 		return toString;
 	}
+	
 	
 
 
